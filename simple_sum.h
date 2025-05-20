@@ -1,0 +1,1 @@
+int simple_sum(int &a, int &b);
