@@ -9,6 +9,8 @@ cc_library(
     deps = [
       # Simply add xlscc as dependency and see if it builds
        "@com_google_xls//xls/contrib/xlscc:xlscc",
+       "@com_google_xls//xls/tools:codegen_main",
+       "@com_google_xls//xls/tools:opt_main",
     ],
 )
 

@@ -7,7 +7,7 @@ new_git_repository(
     name = "com_google_xls",
     # Unable to load package for //dependency_support/boost:add_python.patch
     # commit = "a5e4167d4c3dd4f9d2599ef602f49275247cdfc5",
-    commit = "876141d3c1397a962837fbc3c0dee5e7832d499a",
+    commit = "81ff682f0717ec21442ec997c54898acaa0c2065",
     remote = "https://github.com/code-perspective/xls.git",
 )
 
@@ -35,7 +35,6 @@ git_repository(
     tag = "2024-04-01",
 )
 
-
 load(
   "@rules_python//python:repositories.bzl",
   "py_repositories",
@@ -47,4 +46,3 @@ pip_parse(
     name = "xls_pip_deps",
     requirements_lock = "@com_google_xls//dependency_support:pip_requirements_lock.txt",
 )
-
