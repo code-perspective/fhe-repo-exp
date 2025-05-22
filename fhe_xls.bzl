@@ -115,6 +115,7 @@ def _cc_to_xls_ir_impl(ctx):
     outputs = [
         ir_file,
         metadata_file,
+        metadata_entry_file,
     ]
 
     return [
