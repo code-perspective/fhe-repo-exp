@@ -8,3 +8,106 @@ new_git_repository(
     commit = "7ac03c33c0e026c9f18f99fcbdcd1becbdf4220c",
     remote = "https://github.com/google/xls.git",
 )
+
+
+new_git_repository(
+    name = "heir",
+    commit = "9ea65e4a234926b67cfbca7c60850e66fce1fff5",
+    remote = "https://github.com/google/heir.git",
+    patch_args = ["-p1"],
+    patches = ["//patches:heir.diff"],
+)
+
+# install dependencies for yosys/ABC circuit optimizers
+http_archive(
+    name = "rules_hdl",
+    # Commit 2024-02-14, after merging our patch to fix MacOS builds
+    strip_prefix = "bazel_rules_hdl-9f292fca574e6406a69eeb91daad18a4c8ac2252",
+    url = "https://github.com/hdl/bazel_rules_hdl/archive/9f292fca574e6406a69eeb91daad18a4c8ac2252.tar.gz",
+)
+
+load("@rules_hdl//dependency_support/at_clifford_yosys:at_clifford_yosys.bzl", "at_clifford_yosys")
+load("@rules_hdl//dependency_support/edu_berkeley_abc:edu_berkeley_abc.bzl", "edu_berkeley_abc")
+load("@rules_hdl//dependency_support/net_invisible_island_ncurses:net_invisible_island_ncurses.bzl", "net_invisible_island_ncurses")
+load("@rules_hdl//dependency_support/org_gnu_gnulib:org_gnu_gnulib.bzl", "org_gnu_gnulib")
+load("@rules_hdl//dependency_support/org_gnu_readline:org_gnu_readline.bzl", "org_gnu_readline")
+load("@rules_hdl//dependency_support/tk_tcl:tk_tcl.bzl", "tk_tcl")
+
+net_invisible_island_ncurses()
+
+org_gnu_readline()
+
+edu_berkeley_abc()
+
+tk_tcl()
+
+org_gnu_gnulib()
+
+at_clifford_yosys()
+
+
+load("@heir//bazel:import_llvm.bzl", "import_llvm")
+
+import_llvm("llvm-raw")
+
+load("@heir//bazel:setup_llvm.bzl", "setup_llvm")
+
+setup_llvm("llvm-project")
+
+
+# LLVM doesn't have proper support for excluding the optional llvm_zstd and
+# llvm_zlib dependencies but it is supposed to make LLVM faster, so why not
+# include it.
+# See https://reviews.llvm.org/D143344#4232172
+maybe(
+    http_archive,
+    name = "llvm_zstd",
+    build_file = "@llvm-raw//utils/bazel/third_party_build:zstd.BUILD",
+    sha256 = "7c42d56fac126929a6a85dbc73ff1db2411d04f104fae9bdea51305663a83fd0",
+    strip_prefix = "zstd-1.5.2",
+    urls = [
+        "https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz",
+    ],
+)
+
+maybe(
+    http_archive,
+    name = "llvm_zlib",
+    build_file = "@llvm-raw//utils/bazel/third_party_build:zlib-ng.BUILD",
+    sha256 = "e36bb346c00472a1f9ff2a0a4643e590a254be6379da7cddd9daeb9a7f296731",
+    strip_prefix = "zlib-ng-2.0.7",
+    urls = [
+        "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.7.zip",
+    ],
+)
+
+
+git_repository(
+    name = "openfhe",
+    build_file = "@heir//bazel/openfhe:openfhe.BUILD",
+    # Currently v1.3 2025-05-24
+    commit = "02a8e9c76c3e2eff53392530199c63e4da53eb65",
+    patches = ["@heir//bazel/openfhe:add_config_core.patch"],
+    remote = "https://github.com/openfheorg/openfhe-development.git",
+)
+
+git_repository(
+    name = "cereal",
+    build_file = "@heir//bazel/openfhe:cereal.BUILD",
+    commit = "ebef1e929807629befafbb2918ea1a08c7194554",
+    remote = "https://github.com/USCiLab/cereal.git",
+)
+
+git_repository(
+    name = "rapidjson",
+    build_file = "@heir//bazel/openfhe:rapidjson.BUILD",
+    commit = "9bd618f545ab647e2c3bcbf2f1d87423d6edf800",
+    remote = "https://github.com/Tencent/rapidjson.git",
+)
+
+git_repository(
+    name = "pocketfft",
+    build_file = "@heir//bazel/pocketfft:pocketfft.BUILD",
+    commit = "bb5bdb776c64819f66cb2205f78bef1581448628",
+    remote = "https://gitlab.mpcdf.mpg.de/mtr/pocketfft.git",
+)

@@ -1,0 +1,13 @@
+diff --git a/tools/heir-opt.bzl b/tools/heir-opt.bzl
+index 7b2e9388d..4661553e1 100644
+--- a/tools/heir-opt.bzl
++++ b/tools/heir-opt.bzl
+@@ -23,7 +23,7 @@ def _heir_opt_impl(ctx):
+     env_vars = {}
+     if ctx.attr.HEIR_YOSYS:
+         # https://bazel.build/remote/output-directories#layout-diagram
+-        HEIR_BASE_PATH = "_main/"
++        HEIR_BASE_PATH = "_main/external/heir/"
+         runtime_dir = ctx.executable._heir_opt_binary.path + ".runfiles"
+         yosys_scripts_dir = runtime_dir + "/" + HEIR_BASE_PATH + "lib/Transforms/YosysOptimizer/yosys"
+         abc_path = runtime_dir + "/edu_berkeley_abc/abc"
